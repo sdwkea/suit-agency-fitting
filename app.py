@@ -25,15 +25,15 @@ with st.sidebar:
         st.warning("⚠️ API Key를 입력해야 작동합니다.")
     
     st.markdown("---")
-    # [수정됨] 메뉴를 직관적으로 변경
+    # 메뉴 선택
     category_label = st.radio(
         "어떤 옷을 입히시겠습니까?",
         ["수트 세트 (위아래 한벌)", "재킷/상의만 (Upper)", "바지/하의만 (Lower)"]
     )
     
-    # AI에게 보낼 영어 단어로 변환
+    # AI 설정값 변환
     if "수트" in category_label:
-        category = "dresses" # AI는 전신 옷을 dresses라고 부릅니다
+        category = "dresses" # 위아래 한벌은 dresses로 설정해야 함
     elif "상의" in category_label:
         category = "upper_body"
     else:
@@ -76,25 +76,4 @@ if st.button("✨ 가상 피팅 시작 (Generate)"):
                 os.environ["REPLICATE_API_TOKEN"] = api_key
                 
                 output = replicate.run(
-                    "cuuupid/idm-vton:c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4",
-                    input={
-                        "human_img": io.BytesIO(human_bytes),
-                        "garm_img": io.BytesIO(garm_bytes),
-                        "garment_des": "suit",
-                        "category": category, # 위에서 설정한 값 (dresses 등)
-                        "crop": False,
-                        "seed": 42,
-                        "steps": 50, # [수정됨] 품질을 위해 30 -> 50으로 증가
-                        "force_dc": False,
-                        "mask_only": False
-                    }
-                )
-                
-                st.success("완료되었습니다!")
-                if isinstance(output, list):
-                    st.image(str(output[0]), caption="피팅 결과", use_container_width=True)
-                else:
-                    st.image(str(output), caption="피팅 결과", use_container_width=True)
-                    
-        except Exception as e:
-            st.error(f"에러가 발생했습니다: {str(e)}")
+                    "cuuupid/idm-vton:
