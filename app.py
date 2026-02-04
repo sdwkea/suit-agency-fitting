@@ -44,7 +44,7 @@ if st.button("✨ 가상 피팅 시작 (Generate)"):
             with st.spinner("AI가 옷을 입히는 중입니다... (약 20초 소요)"):
                 os.environ["REPLICATE_API_TOKEN"] = api_key
                 
-                # 여기가 수정된 핵심 부분입니다 (최신 모델 주소 적용)
+                # AI 모델 실행
                 output = replicate.run(
                     "cuuupid/idm-vton:c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4",
                     input={
@@ -59,7 +59,14 @@ if st.button("✨ 가상 피팅 시작 (Generate)"):
                         "mask_only": False
                     }
                 )
+                
                 st.success("완료되었습니다!")
-                st.image(output, caption="피팅 결과", use_container_width=True)
+                
+                # [수정된 부분] 결과물이 파일 객체든 리스트든 안전하게 주소(String)로 변환해서 출력
+                if isinstance(output, list):
+                    st.image(str(output[0]), caption="피팅 결과", use_container_width=True)
+                else:
+                    st.image(str(output), caption="피팅 결과", use_container_width=True)
+                    
         except Exception as e:
             st.error(f"에러가 발생했습니다: {str(e)}")
