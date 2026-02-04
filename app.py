@@ -76,4 +76,25 @@ if st.button("✨ 가상 피팅 시작 (Generate)"):
                 os.environ["REPLICATE_API_TOKEN"] = api_key
                 
                 output = replicate.run(
-                    "cuuupid/idm-vton:
+                    "cuuupid/idm-vton:c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4",
+                    input={
+                        "human_img": io.BytesIO(human_bytes),
+                        "garm_img": io.BytesIO(garm_bytes),
+                        "garment_des": "suit",
+                        "category": category, 
+                        "crop": False,
+                        "seed": 42,
+                        "steps": 40, # [수정됨] 50에서 허용 최대치인 40으로 수정
+                        "force_dc": False,
+                        "mask_only": False
+                    }
+                )
+                
+                st.success("완료되었습니다!")
+                if isinstance(output, list):
+                    st.image(str(output[0]), caption="피팅 결과", use_container_width=True)
+                else:
+                    st.image(str(output), caption="피팅 결과", use_container_width=True)
+                    
+        except Exception as e:
+            st.error(f"에러가 발생했습니다: {str(e)}")
